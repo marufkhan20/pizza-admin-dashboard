@@ -1,11 +1,35 @@
 import { LockFilled, LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space } from "antd";
-import { Link, MemoryRouter } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Alert,
+  Button,
+  Card,
+  Checkbox,
+  Flex,
+  Form,
+  Input,
+  Layout,
+  Space,
+} from "antd";
 import Logo from "../../components/icons/Logo";
+import { login } from "../../http/api";
+import { Credentials } from "../../types";
+
+const loginUser = async (userData: Credentials) => {
+  const { data } = await login(userData);
+  return data;
+};
 
 const Login = () => {
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: loginUser,
+    onSuccess: async () => {
+      console.log("login successfull");
+    },
+  });
   return (
-    <MemoryRouter>
+    <>
       <Layout
         style={{ height: "100vh", display: "grid", placeItems: "center" }}
       >
@@ -36,7 +60,23 @@ const Login = () => {
               </Space>
             }
           >
-            <Form initialValues={{ remember: true }}>
+            <Form
+              onFinish={(values) => {
+                mutate({
+                  email: values.username,
+                  password: values.password,
+                });
+              }}
+              initialValues={{ remember: true }}
+            >
+              {isError && (
+                <Alert
+                  style={{ marginBottom: 24 }}
+                  type="error"
+                  message={error?.message}
+                />
+              )}
+
               <Form.Item
                 name="username"
                 rules={[
@@ -72,9 +112,9 @@ const Login = () => {
                 <Form.Item name="remember" valuePropName="checked">
                   <Checkbox>Remember me</Checkbox>
                 </Form.Item>
-                <Link to="#" id="login-form-forgot">
+                <a href="#" id="login-form-forgot">
                   Forgot password
-                </Link>
+                </a>
               </Flex>
 
               <Form.Item>
@@ -82,6 +122,7 @@ const Login = () => {
                   type="primary"
                   htmlType="submit"
                   style={{ width: "100%" }}
+                  loading={isPending}
                 >
                   Log in
                 </Button>
@@ -90,7 +131,7 @@ const Login = () => {
           </Card>
         </Space>
       </Layout>
-    </MemoryRouter>
+    </>
   );
 };
 
