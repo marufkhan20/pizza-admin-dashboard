@@ -12,7 +12,8 @@ import {
   Space,
 } from "antd";
 import Logo from "../../components/icons/Logo";
-import { getSelf, login } from "../../http/api";
+import { usePermission } from "../../hooks/usePermission";
+import { getSelf, login, logout } from "../../http/api";
 import { useAuthStore } from "../../store";
 import { Credentials } from "../../types";
 
@@ -28,6 +29,7 @@ const getSelfData = async () => {
 
 const Login = () => {
   const { setUser } = useAuthStore();
+  const { isAllowed } = usePermission();
 
   // get self data for login user
   const { refetch } = useQuery({
@@ -45,7 +47,11 @@ const Login = () => {
       const { data: selfData } = await refetch();
 
       // set data in store
-      setUser(selfData);
+      if (isAllowed(selfData)) {
+        setUser(selfData);
+      } else {
+        await logout();
+      }
     },
   });
   return (
