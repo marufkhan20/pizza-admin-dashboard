@@ -38,6 +38,12 @@ const Login = () => {
     enabled: false,
   });
 
+  // logout user
+  const { mutate: logoutMutate } = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: logout,
+  });
+
   // login user
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ["login"],
@@ -50,7 +56,7 @@ const Login = () => {
       if (isAllowed(selfData)) {
         setUser(selfData);
       } else {
-        await logout();
+        logoutMutate();
       }
     },
   });
