@@ -1,5 +1,15 @@
-import Icon from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import Icon, { BellFilled } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  Flex,
+  Layout,
+  Menu,
+  Space,
+  theme,
+} from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
@@ -10,6 +20,7 @@ import GiftIcon from "../components/icons/GiftIcon";
 import Home from "../components/icons/Home";
 import Logo from "../components/icons/Logo";
 import UserIcon from "../components/icons/UserIcon";
+import { logout } from "../http/api";
 import { useAuthStore } from "../store";
 
 const items = [
@@ -43,6 +54,18 @@ const items = [
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
 
+  const { logout: logoutFromState } = useAuthStore();
+
+  // logout user
+  const { mutate: logoutMutate } = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: logout,
+    onSuccess: () => {
+      logoutFromState();
+      return;
+    },
+  });
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -72,11 +95,45 @@ const Dashboard = () => {
             items={items}
           />
         </Sider>
+
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Header style={{ padding: "0 16px", background: colorBgContainer }}>
+            <Flex gap="middle" align="center" justify="space-between">
+              <Badge text="Global" status="success" />
+              <Space size={16}>
+                <Badge dot style={{ cursor: "pointer" }}>
+                  <BellFilled style={{ cursor: "pointer" }} />
+                </Badge>
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "logout",
+                        label: "Logout",
+                        onClick: () => logoutMutate(),
+                      },
+                    ],
+                  }}
+                  placement="bottomLeft"
+                >
+                  <Avatar
+                    style={{
+                      backgroundColor: "#fde3cf",
+                      color: "#f56a00",
+                      cursor: "pointer",
+                    }}
+                  >
+                    U
+                  </Avatar>
+                </Dropdown>
+              </Space>
+            </Flex>
+          </Header>
+
           <Content style={{ margin: "0 16px" }}>
             <Outlet />
           </Content>
+
           <Footer style={{ textAlign: "center" }}>Mernspace Pizza Shop</Footer>
         </Layout>
       </Layout>
