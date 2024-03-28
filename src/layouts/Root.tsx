@@ -16,6 +16,7 @@ const Root = () => {
   const { data, isPending } = useQuery({
     queryKey: ["self"],
     queryFn: getSelfData,
+    retry: false,
   });
 
   useEffect(() => {
