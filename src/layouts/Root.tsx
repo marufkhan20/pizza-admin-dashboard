@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { getSelf } from "../http/api";
@@ -16,7 +17,13 @@ const Root = () => {
   const { data, isPending } = useQuery({
     queryKey: ["self"],
     queryFn: getSelfData,
-    retry: false,
+    retry: (failureCount: number, error) => {
+      console.log("error", error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   useEffect(() => {
