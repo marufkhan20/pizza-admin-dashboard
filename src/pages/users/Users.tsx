@@ -1,8 +1,9 @@
 import { RightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb, Table } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { getUsers } from "../../http/api";
+import { useAuthStore } from "../../store";
 import { User } from "../../types";
 
 const columns = [
@@ -36,6 +37,8 @@ const columns = [
 ];
 
 const Users = () => {
+  const { user } = useAuthStore();
+
   // get users
   const {
     data: users,
@@ -48,7 +51,12 @@ const Users = () => {
       const { data } = await getUsers();
       return data;
     },
+    enabled: user?.role === "admin",
   });
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
   return (
     <>
       <Breadcrumb
