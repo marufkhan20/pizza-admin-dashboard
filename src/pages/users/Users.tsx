@@ -68,9 +68,18 @@ const Users = () => {
       {isPending && <div>Loading...</div>}
       {isError && <div>{error?.message}</div>}
 
-      <UserFilter />
+      <UserFilter
+        onFilterChange={(filterName: string, filterValue: string) => {
+          console.log(filterName, filterValue);
+        }}
+      />
 
-      <Table style={{ marginTop: 30 }} columns={columns} dataSource={users} />
+      <Table
+        style={{ marginTop: 30 }}
+        columns={columns}
+        dataSource={users}
+        rowKey={"id"}
+      />
     </>
   );
 };
