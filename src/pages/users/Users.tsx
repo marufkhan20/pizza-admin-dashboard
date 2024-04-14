@@ -2,6 +2,7 @@ import { RightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb, Table } from "antd";
 import { Link, Navigate } from "react-router-dom";
+import UserFilter from "../../components/users/UserFilter";
 import { getUsers } from "../../http/api";
 import { useAuthStore } from "../../store";
 import { User } from "../../types";
@@ -66,6 +67,8 @@ const Users = () => {
 
       {isPending && <div>Loading...</div>}
       {isError && <div>{error?.message}</div>}
+
+      <UserFilter />
 
       <Table style={{ marginTop: 30 }} columns={columns} dataSource={users} />
     </>
