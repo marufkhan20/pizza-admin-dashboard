@@ -122,7 +122,11 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input prefix={<UserOutlined />} placeholder="Username" />
+                <Input
+                  size="large"
+                  prefix={<UserOutlined />}
+                  placeholder="Username"
+                />
               </Form.Item>
 
               <Form.Item
@@ -135,6 +139,7 @@ const Login = () => {
                 ]}
               >
                 <Input.Password
+                  size="large"
                   prefix={<LockOutlined />}
                   placeholder="Password"
                 />
@@ -151,6 +156,7 @@ const Login = () => {
 
               <Form.Item>
                 <Button
+                  size="large"
                   type="primary"
                   htmlType="submit"
                   style={{ width: "100%" }}
